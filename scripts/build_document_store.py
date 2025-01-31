@@ -97,7 +97,7 @@ def parse_python_script(file_path: str) -> None:
     return chunks
 
 
-def walk_directory(directory: str) -> None:
+def create_documents(directory: str) -> None:
     doc_store = []
     for root, _, files in os.walk(directory):
         for file in files:
@@ -112,7 +112,7 @@ def walk_directory(directory: str) -> None:
 
 
 def main(path: str) -> None:
-    walk_directory(path)
+    doc_store = create_documents(path)
 
 
 if __name__ == "__main__":
