@@ -1,2 +1,4 @@
 .venv
 code_query.egg-info
+vector_stores
+*__pycache__*
