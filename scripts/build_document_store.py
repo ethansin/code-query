@@ -1,5 +1,12 @@
 import os
+import faiss
+
 from utils.document_utils import is_indented, create_document
+
+from langchain_community.docstore.in_memory import InMemoryDocstore
+from langchain_community.vectorstores import FAISS
+from langchain_openai import OpenAIEmbeddings
+from uuid import uuid4
 
 def parse_file(file_path: str) -> list:
 
@@ -95,7 +102,26 @@ def create_documents(directory: str) -> None:
 
 
 def main(path: str) -> None:
+
+    if not os.path.exists("vector_stores"):
+        os.makedirs("vector_stores")
+
+    embeddings = OpenAIEmbeddings(model="text-embedding-ada-002")
+    dim = len(embeddings.embed_query("Initialize embedding dimensions for index."))
+    index = faiss.IndexFlatL2(dim)
+
+
+    vector_store = FAISS(
+        embedding_function=embeddings,
+        index=index,
+        docstore=InMemoryDocstore(),
+        index_to_docstore_id={},
+    )
+
     doc_store = create_documents(path)
+    uuids = [str(uuid4()) for _ in range(len(doc_store))]
+    vector_store.add_documents(documents=doc_store, ids=uuids)
+    vector_store.save_local(f"vector_stores/{os.path.basename(path)}")
 
 
 if __name__ == "__main__":
