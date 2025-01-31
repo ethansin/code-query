@@ -1,4 +1,5 @@
 langchain-community
 langchain-openai
 faiss-cpu
-docker
+fastapi
+uvicorn
