@@ -1,7 +1,5 @@
 import os
-
-def is_indented(line):
-    return len(line) - len(line.lstrip()) > 0 and line.strip() != ""
+from utils.document_utils import is_indented, create_document
 
 def parse_file(file_path: str) -> list:
 
@@ -16,10 +14,7 @@ def parse_file(file_path: str) -> list:
     chunks = []
     for i in range(0, len(lines), 30):
         chunk = lines[i:i + 40]
-        chunks.append({
-            "content": ''.join(chunk),
-            "metadata": {"file_name": file_name}
-        })
+        chunks.append(create_document(''.join(chunk), file_name))
 
     return chunks
 
@@ -40,10 +35,7 @@ def parse_python_script(file_path: str) -> None:
 
         if idx == len(lines) - 1:
             current_chunk.append(line)
-            chunks.append({
-                "content": ''.join(current_chunk),
-                "metadata": {"file_name": file_name}
-            })
+            chunks.append(create_document(''.join(current_chunk), file_name))
             break
 
         if current_chunk == []:
@@ -55,10 +47,7 @@ def parse_python_script(file_path: str) -> None:
                 is_hierarchy = False
         elif len(current_chunk) > 50:
             current_chunk = lines[idx - 10:idx] + current_chunk
-            chunks.append({
-                "content": ''.join(current_chunk),
-                "metadata": {"file_name": file_name}
-            })
+            chunks.append(create_document(''.join(current_chunk), file_name))
             current_chunk = []
             current_chunk.append(line)
             if is_indented(lines[idx + 1]):
@@ -69,10 +58,7 @@ def parse_python_script(file_path: str) -> None:
             if is_indented(line) or line.strip() == "":
                 current_chunk.append(line)
             else:
-                chunks.append({
-                    "content": ''.join(current_chunk),
-                    "metadata": {"file_name": file_name}
-                })
+                chunks.append(create_document(''.join(current_chunk), file_name))
                 current_chunk = []
                 current_chunk.append(line)
                 if is_indented(lines[idx + 1]):
@@ -81,10 +67,7 @@ def parse_python_script(file_path: str) -> None:
                     is_hierarchy = False
         elif not is_hierarchy:
             if is_indented(lines[idx + 1]):
-                chunks.append({
-                    "content": ''.join(current_chunk),
-                    "metadata": {"file_name": file_name}
-                })
+                chunks.append(create_document(''.join(current_chunk), file_name))
                 current_chunk = []
                 current_chunk.append(line)
                 if is_indented(lines[idx + 1]):
