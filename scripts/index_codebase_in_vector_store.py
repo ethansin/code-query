@@ -8,6 +8,8 @@ from langchain_community.vectorstores import FAISS
 from langchain_openai import OpenAIEmbeddings
 from uuid import uuid4
 
+from argparse import ArgumentParser
+
 def parse_file(file_path: str) -> list:
 
     file_name = os.path.basename(file_path)
@@ -101,7 +103,7 @@ def create_documents(directory: str) -> None:
     return doc_store
 
 
-def main(path: str) -> None:
+def build_vector_store(path: str) -> None:
 
     if not os.path.exists("vector_stores"):
         os.makedirs("vector_stores")
@@ -125,4 +127,8 @@ def main(path: str) -> None:
 
 
 if __name__ == "__main__":
-    main("/Users/ethansin/Desktop/mcode-project/grip-no-tests")
+    parser = ArgumentParser()
+    parser.add_argument("path", type=str, help="Path to the directory containing the documents to be indexed.")
+    args = parser.parse_args()
+
+    build_vector_store(args.path)
