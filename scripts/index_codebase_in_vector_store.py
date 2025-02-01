@@ -117,12 +117,13 @@ def create_documents(directory: str) -> None:
     doc_store = []
     for root, _, files in os.walk(directory):
         for file in files:
+            documents = []
             file_path = os.path.join(root, file)
             if file_path.endswith(".py"):
-                documents = parse_python_script_by_indent(file_path)
+                documents.extend(parse_python_script_by_indent(file_path))
                 documents.extend(parse_python_script_by_tree(file_path))
             else:
-                documents = parse_file(file_path)
+                documents.extend(parse_file(file_path))
             if isinstance(documents, list):
                 doc_store.extend(documents)
     return doc_store
