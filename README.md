@@ -14,6 +14,7 @@ uvicorn main:app --reload
 Then in another terminal
 
 ```
+cd path/to/code-query
 bash make_query.sh path/to/target-repo
 ```
 
