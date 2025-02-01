@@ -6,8 +6,14 @@ The following commands will install all necessary requirements, run the process 
 ```
 cd path/to/code-query
 python3 -m venv .venv
+source .venv/bin/activate
 pip install -e .
 uvicorn main:app --reload    
+```
+
+Then in another terminal
+
+```
 bash make_query.sh path/to/target-repo
 ```
 
