@@ -67,7 +67,7 @@ def code_retrieval(query: QueryData):
 @app.post("/create_vector_store")
 def create_vector_store(query: QueryData):
     if os.path.exists(f"vector_stores/{os.path.basename(query.repo_path)}"):
-        return {"message": "Vector store already exists, skipping creation."}
+        return "Vector store already exists, skipping creation."
     else:
         build_vector_store(query.repo_path)
-        return {"message": "Vector store created!"}
+        return "Vector store created!"
