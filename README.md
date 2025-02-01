@@ -1,5 +1,7 @@
 # code-query
 
+A REST API to build an indexed vector store of a target repository and initiate retrieval-augmented response generations from an LLM. Make sure the target repository is a fresh repository that does not have packages/modules installed as currently the vector store creation function cannot ignore those package files.
+
 ## Installation
 The following commands will install all necessary requirements, run the process to host the REST API app locally, and initialize a script to make requests to the REST API
 
