@@ -2,6 +2,7 @@
 
 import os
 import faiss
+import ast
 
 from utils.document_utils import is_indented, create_document
 
@@ -29,7 +30,7 @@ def parse_file(file_path: str) -> list:
 
     return chunks
 
-def parse_python_script(file_path: str) -> None:
+def parse_python_script_by_indent(file_path: str) -> list:
 
     file_name = os.path.basename(file_path)
     with open(file_path, 'r') as file:
@@ -90,6 +91,27 @@ def parse_python_script(file_path: str) -> None:
 
     return chunks
 
+def parse_python_script_by_tree(file_path: str) -> list:
+    file_name = os.path.basename(file_path)
+    with open(file_path, 'r') as file:
+        try:
+            tree = ast.parse(file.read(), filename=file_name)
+        except (SyntaxError, UnicodeDecodeError):
+            print(f"Could not parse file {file_path}")
+            return []
+
+    chunks = []
+    for node in ast.walk(tree):
+        if isinstance(node, ast.FunctionDef):
+            start_lineno = node.lineno - 1
+            end_lineno = node.end_lineno if hasattr(node, 'end_lineno') else node.body[-1].lineno
+            with open(file_path, 'r') as file:
+                lines = file.readlines()
+                function_code = ''.join(lines[start_lineno:end_lineno])
+                chunks.append(create_document(function_code, file_name))
+
+    return chunks
+
 
 def create_documents(directory: str) -> None:
     doc_store = []
@@ -97,7 +119,8 @@ def create_documents(directory: str) -> None:
         for file in files:
             file_path = os.path.join(root, file)
             if file_path.endswith(".py"):
-                documents = parse_python_script(file_path)
+                documents = parse_python_script_by_indent(file_path)
+                documents.extend(parse_python_script_by_tree(file_path))
             else:
                 documents = parse_file(file_path)
             if isinstance(documents, list):
