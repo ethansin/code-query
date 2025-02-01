@@ -37,4 +37,4 @@ Where JSON_INPUT should contain a dictionary that looks like:
 }
 ```
 
-Making the POST request to `/create_vector_store` first is necessary for `/retrieval` and `/query` to work.
+Making the POST request to `/create_vector_store` OR running `scripts/index_codebase_in_vector_store.py` first is necessary for `/retrieval` and `/query` to work.
